@@ -18,8 +18,8 @@
 
 BOOST_STATIC_ASSERT_MSG(BOOST_VERSION >= 105400, "You must use boost-1.54 or later!!!");
 
-#include "avhttp/http_stream.hpp"
-#include "avhttp/completion_condition.hpp"
+#include <avhttp/http_stream.hpp>
+#include <avhttp/completion_condition.hpp>
 
 namespace avhttp {
 namespace detail {
@@ -28,54 +28,54 @@ template <typename AsyncReadStream, typename MutableBufferSequence, typename Han
 class read_body_op : boost::asio::coroutine
 {
 public:
-	read_body_op(AsyncReadStream& stream, const avhttp::url& url,
-		MutableBufferSequence& buffers, Handler handler)
-		: m_stream(stream)
-		, m_buffers(buffers)
-		, m_handler(BOOST_ASIO_MOVE_CAST(Handler)(handler))
-	{
-		m_stream.async_open(url, *this);
-	}
+    read_body_op(AsyncReadStream& stream, const avhttp::url& url,
+        MutableBufferSequence& buffers, Handler handler)
+        : m_stream(stream)
+        , m_buffers(buffers)
+        , m_handler(BOOST_ASIO_MOVE_CAST(Handler)(handler))
+    {
+        m_stream.async_open(url, *this);
+    }
 
-	void operator()(const boost::system::error_code& ec, std::size_t bytes_transferred = 0)
-	{
-		BOOST_ASIO_CORO_REENTER(this)
-		{
-			if(!ec)
-			{
-				BOOST_ASIO_CORO_YIELD boost::asio::async_read(
-					m_stream, m_buffers, transfer_response_body(m_stream.content_length()), *this);
-			}
-			else
-			{
-				m_handler(ec, bytes_transferred);
-				return;
-			}
+    void operator()(const boost::system::error_code& ec, std::size_t bytes_transferred = 0)
+    {
+        BOOST_ASIO_CORO_REENTER(this)
+        {
+            if(!ec)
+            {
+                BOOST_ASIO_CORO_YIELD boost::asio::async_read(
+                    m_stream, m_buffers, transfer_response_body(m_stream.content_length()), *this);
+            }
+            else
+            {
+                m_handler(ec, bytes_transferred);
+                return;
+            }
 
-			if(ec == boost::asio::error::eof && m_stream.content_length() == -1)
-			{
-				m_handler(boost::system::error_code(), bytes_transferred);
-			}
-			else
-			{
-				m_handler(ec, bytes_transferred);
-			}
-		}
-	}
+            if(ec == boost::asio::error::eof && m_stream.content_length() == -1)
+            {
+                m_handler(boost::system::error_code(), bytes_transferred);
+            }
+            else
+            {
+                m_handler(ec, bytes_transferred);
+            }
+        }
+    }
 
 // private:
-	AsyncReadStream& m_stream;
-	MutableBufferSequence& m_buffers;
-	Handler m_handler;
+    AsyncReadStream& m_stream;
+    MutableBufferSequence& m_buffers;
+    Handler m_handler;
 };
 
 template <typename AsyncReadStream, typename MutableBufferSequence, typename Handler>
 read_body_op<AsyncReadStream, MutableBufferSequence, Handler>
-	make_read_body_op(AsyncReadStream& stream,
-	const avhttp::url& url, MutableBufferSequence& buffers, Handler handler)
+    make_read_body_op(AsyncReadStream& stream,
+    const avhttp::url& url, MutableBufferSequence& buffers, Handler handler)
 {
-	return read_body_op<AsyncReadStream, MutableBufferSequence, Handler>(
-		stream, url, buffers, handler);
+    return read_body_op<AsyncReadStream, MutableBufferSequence, Handler>(
+        stream, url, buffers, handler);
 }
 
 } // namespace detail
@@ -95,8 +95,8 @@ read_body_op<AsyncReadStream, MutableBufferSequence, Handler>
 // @param handler在读取操作完成或出现错误时, 将被回调, 它满足以下条件:
 // @begin code
 //  void handler(
-//    const boost::system::error_code& ec,	// 用于返回操作状态.
-//    std::size_t bytes_transferred			// 返回读取的数据字节数.
+//    const boost::system::error_code& ec,    // 用于返回操作状态.
+//    std::size_t bytes_transferred            // 返回读取的数据字节数.
 //  );
 // @end code
 // @begin example
@@ -113,9 +113,9 @@ read_body_op<AsyncReadStream, MutableBufferSequence, Handler>
 // @end example
 template<typename AsyncReadStream, typename MutableBufferSequence, typename Handler>
 AVHTTP_DECL void async_read_body(AsyncReadStream& stream,
-	const avhttp::url& url, MutableBufferSequence& buffers, Handler handler)
+    const avhttp::url& url, MutableBufferSequence& buffers, Handler handler)
 {
-	detail::make_read_body_op(stream, url, buffers, handler);
+    detail::make_read_body_op(stream, url, buffers, handler);
 }
 
 } // namespace avhttp

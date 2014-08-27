@@ -15,9 +15,9 @@
 # error Do not compile avhttp library source with AVHTTP_HEADER_ONLY defined
 #endif
 
-#include "avhttp/impl/file.ipp"
-#include "avhttp/impl/file_upload.ipp"
-#include "avhttp/impl/http_stream.ipp"
-#include "avhttp/impl/multi_download.ipp"
+#include <avhttp/impl/file.ipp>
+#include <avhttp/impl/file_upload.ipp>
+#include <avhttp/impl/http_stream.ipp>
+#include <avhttp/impl/multi_download.ipp>
 
 #endif // AVHTTP_IMPL_SRC_HPP

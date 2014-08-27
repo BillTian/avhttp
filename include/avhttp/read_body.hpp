@@ -16,8 +16,8 @@
 # pragma once
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
-#include "avhttp/http_stream.hpp"
-#include "avhttp/completion_condition.hpp"
+#include <avhttp/http_stream.hpp>
+#include <avhttp/completion_condition.hpp>
 
 
 namespace avhttp {
@@ -32,17 +32,17 @@ namespace avhttp {
 // 具体可参考boost.asio文档中相应的描述.
 template<typename AsyncReadStream, typename MutableBufferSequence>
 AVHTTP_DECL std::size_t read_body(AsyncReadStream& stream,
-	const avhttp::url& url, MutableBufferSequence& buffers, boost::system::error_code &ec)
+    const avhttp::url& url, MutableBufferSequence& buffers, boost::system::error_code &ec)
 {
-	std::size_t readed = 0;
-	stream.open(url, ec);
-	if (ec)
-		return -1;
-	readed = boost::asio::read(stream, buffers, transfer_response_body(stream.content_length()), ec);
+    std::size_t readed = 0;
+    stream.open(url, ec);
+    if (ec)
+        return -1;
+    readed = boost::asio::read(stream, buffers, transfer_response_body(stream.content_length()), ec);
 
-	if(ec == boost::asio::error::eof && stream.content_length() == -1)
-		ec = boost::system::error_code();
-	return readed;
+    if(ec == boost::asio::error::eof && stream.content_length() == -1)
+        ec = boost::system::error_code();
+    return readed;
 }
 
 } // namespace avhttp

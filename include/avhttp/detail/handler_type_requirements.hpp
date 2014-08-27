@@ -134,11 +134,11 @@ namespace detail {
   typedef int
 
 #define AVHTTP_REQUEST_HANDLER_CHECK( \
-	handler_type, handler) \
+    handler_type, handler) \
   typedef int
 
 #define AVHTTP_RECEIVE_HEADER_CHECK( \
-	handler_type, handler) \
+    handler_type, handler) \
   typedef int
 
 #endif

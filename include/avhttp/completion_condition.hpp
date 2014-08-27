@@ -27,31 +27,31 @@ namespace detail {
 // match condition!
 struct transfer_response_body_t
 {
-	transfer_response_body_t(boost::int64_t content_length)
-		: m_content_length(content_length)
-	{
-	}
+    transfer_response_body_t(boost::int64_t content_length)
+        : m_content_length(content_length)
+    {
+    }
 
-	template <typename Error>
-	std::size_t operator()(const Error& err, std::size_t bytes_transferred)
-	{
-		using boost::asio::detail::default_max_transfer_size;
+    template <typename Error>
+    std::size_t operator()(const Error& err, std::size_t bytes_transferred)
+    {
+        using boost::asio::detail::default_max_transfer_size;
 
-		if(m_content_length > 0 )
-		{
-			// just the same boost::asio::transfer_exactly
-			return (!!err || bytes_transferred >= m_content_length) ? 0 :
-			(m_content_length - bytes_transferred < default_max_transfer_size
-				? m_content_length - bytes_transferred : std::size_t(default_max_transfer_size));
-		}
-		else
-		{
-			// just the same as boost::asio::transfer_all
-			return !!err ? 0 : default_max_transfer_size;
-		}
-	}
+        if(m_content_length > 0 )
+        {
+            // just the same boost::asio::transfer_exactly
+            return (!!err || bytes_transferred >= m_content_length) ? 0 :
+            (m_content_length - bytes_transferred < default_max_transfer_size
+                ? m_content_length - bytes_transferred : std::size_t(default_max_transfer_size));
+        }
+        else
+        {
+            // just the same as boost::asio::transfer_all
+            return !!err ? 0 : default_max_transfer_size;
+        }
+    }
 
-	boost::int64_t m_content_length;
+    boost::int64_t m_content_length;
 };
 
 }
@@ -85,7 +85,7 @@ unspecified transfer_response_body(boost::int64_t content_length)
 #else
 inline detail::transfer_response_body_t transfer_response_body(boost::int64_t content_length)
 {
-	return detail::transfer_response_body_t(content_length);
+    return detail::transfer_response_body_t(content_length);
 }
 #endif
 
